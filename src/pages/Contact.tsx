@@ -7,10 +7,10 @@ const Contact: React.FC = () => {
     <div className="wrapper">
       <div className="text-container home">
         <div>
-          <a href="www.linkedin.com/kkplak">Linkedin</a>
+          <a href="https://www.linkedin.com/kkplak">LinkedIn</a>
         </div>
         <div>
-          <a href="www.github.com/kkplak">GitHub</a>
+          <a href="https://www.github.com/kkplak">GitHub</a>
         </div>
         <div>
           <a href="mailto:info@codeline.com">Mail</a>

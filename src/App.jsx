@@ -28,6 +28,15 @@ const App = () => {
   // Define multiple color palettes
   const colorPalettes = [
     [
+      [0.18, 0.18, 0.18], // Charcoal
+      [0.25, 0.25, 0.25], // Graphite
+      [0.3, 0.3, 0.3], // Iron
+      [0.15, 0.15, 0.15], // Black Steel
+      [0.2, 0.4, 0.6], // Electric Blue
+      [0.22, 0.22, 0.22], // Smoky
+      [0.28, 0.28, 0.28], // Slate
+    ],
+    [
       [0.5, 0.31, 0.16], // Terracotta
       [0.64, 0.44, 0.21], // Umber
       [0.58, 0.44, 0.09], // Ochre
@@ -57,16 +66,6 @@ const App = () => {
       [0.35, 0.5, 0.2], // Lime Green
       [0.22, 0.18, 0.28], // Mulberry
       [0.27, 0.23, 0.33], // Royal Purple
-    ],
-
-    [
-      [0.18, 0.18, 0.18], // Charcoal
-      [0.25, 0.25, 0.25], // Graphite
-      [0.3, 0.3, 0.3], // Iron
-      [0.15, 0.15, 0.15], // Black Steel
-      [0.2, 0.4, 0.6], // Electric Blue
-      [0.22, 0.22, 0.22], // Smoky
-      [0.28, 0.28, 0.28], // Slate
     ],
 
     // Palette 3
@@ -461,30 +460,7 @@ const App = () => {
                   <button
                     key={text}
                     onClick={() => changeContent(componentName)}
-                    style={{
-                      backgroundColor: isActive
-                        ? "rgba(255, 255, 255, 0.1)" // Active state color
-                        : "transparent",
-                      color: "#ffffff",
-                      border: "none",
-                      padding: "10px 20px",
-                      borderRadius: "5px",
-                      cursor: "pointer",
-                      transition: "background-color 0.3s, transform 0.3s", // Smooth hover effect
-                      fontSize: "1rem",
-                      fontFamily: "Josefin Sans, sans-serif",
-                    }}
-                    onMouseOver={(e) => {
-                      if (!isActive) {
-                        e.target.style.backgroundColor =
-                          "rgba(255, 255, 255, 0.2)"; // Lighter on hover
-                      }
-                    }}
-                    onMouseOut={(e) => {
-                      if (!isActive) {
-                        e.target.style.backgroundColor = "transparent"; // Revert on mouse out for non-active items
-                      }
-                    }}
+                    className={`custom-button ${isActive ? "active" : ""}`}
                   >
                     {text}
                   </button>
@@ -494,21 +470,9 @@ const App = () => {
           </nav>
 
           <h1
-            style={{
-              position: "fixed",
-              top: "95.5%",
-              left: "86%",
-              transform: "translate(-50%, -50%)",
-              color: "#ffffff",
-              fontSize: "2rem",
-              mixBlendMode: "overlay",
-              pointerEvents: "auto", // Change to 'auto' to make the element clickable
-              zIndex: 1,
-              textAlign: "center",
-              fontFamily: "Josefin Sans, sans-serif",
-              cursor: "pointer", // Add cursor pointer to indicate it's clickable
-            }}
+            className="codeline"
             onClick={changeStyle}
+            onTouchStart={changeStyle}
           >
             codeline
           </h1>

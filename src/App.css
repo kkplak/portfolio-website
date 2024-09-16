@@ -177,28 +177,94 @@ p {
   transform: translateY(0);
   background: rgba(255, 255, 255, 0.2);
 }
-.language-switcher {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
 
-.language-icon {
-  width: 30px;
-  height: 30px;
+.codeline {
+  position: fixed;
+  top: 95.5%;
+  left: 86%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  font-size: 2rem;
+  mix-blend-mode: overlay;
+  pointer-events: auto; /* Make the element clickable */
+  z-index: 10; /* Make sure it's higher than other elements */
+  text-align: center;
+  font-family: "Josefin Sans", sans-serif;
+  cursor: pointer; /* Add cursor pointer to indicate it's clickable */
+  padding: 10px; /* Increase touchable area */
+}
+.custom-button {
+  background-color: transparent;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
   cursor: pointer;
-  opacity: 0.4;
-  transition: opacity 0.3s;
+  transition: background-color 0.3s, transform 0.3s;
+  font-size: 1rem;
+  font-family: "Josefin Sans", sans-serif;
 }
 
-.language-icon.active,
-.language-icon:hover {
-  opacity: 1;
-  transform: scale(1.05);
+.custom-button:hover {
+  background-color: rgba(255, 255, 255, 0.2); /* Lighter on hover */
 }
-.home-buttons-container {
-  width: 100%;
+
+.custom-button.active {
+  background-color: rgba(255, 255, 255, 0.1); /* Active state color */
 }
-.button-link {
-  text-decoration: none;
+
+@media (max-width: 768px) {
+  html {
+    overflow: hidden;
+  }
+  .content-wrapper {
+    overflow: scroll;
+    width: 70%;
+    margin-right: 1rem;
+  }
+
+  .text-container.home {
+    width: 50%;
+    margin-right: 1rem;
+  }
+  .text-container.playground {
+    padding-right: 1rem;
+  }
+}
+
+@media (max-width: 468px) {
+  .color-wrapper div {
+    width: 20px !important;
+    height: 20px !important;
+  }
+  .color-wrapper {
+    padding: 0 0.2rem;
+    gap: 0.4rem;
+  }
+  .text-container div {
+    margin-top: 0.2rem;
+  }
+  h2 {
+    text-align: center;
+  }
+  .custom-button {
+    padding: 10px 15px;
+  }
+  .codeline {
+    top: 95%;
+    left: 80%;
+  }
+  .content-wrapper {
+    overflow: scroll;
+    width: 60%;
+    margin-right: 0rem;
+  }
+
+  .text-container.home {
+    width: 60%;
+    margin-right: 0.2rem;
+  }
+  .text-container.playground {
+    padding-right: 1.5rem;
+  }
 }
