@@ -1,0 +1,204 @@
+/* Ensure body and root elements occupy full viewport */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  font-family: "Josefin Sans", sans-serif;
+  color: white;
+}
+
+/* Center the content and occupy full height */
+.App {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+.homepage-title {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+}
+.h1 {
+  mix-blend-mode: overlay;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  z-index: 1;
+  width: 90%;
+  height: 88%;
+  background-color: rgba(255, 255, 255, 0.055);
+  border-radius: 5rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.237);
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out forwards;
+  width: 100%;
+}
+
+.fade-out {
+  animation: fadeOut 0.5s ease-in-out forwards;
+  width: 100%;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.color-wrapper div {
+  transition: background-color 0.5s ease;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  height: 100%;
+}
+
+.content-wrapper {
+  display: flex;
+  justify-content: center;
+
+  flex-direction: column;
+  gap: 1rem;
+  width: 60%;
+  margin-right: 5rem;
+  height: 100%;
+}
+
+.content-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 2rem;
+  border-radius: 5rem 3rem;
+  transition: transform 0.3s, background 0.3s;
+}
+
+.content-section:first-child {
+  border-radius: 5rem 5rem 3rem 3rem;
+}
+
+.content-section:hover {
+  transform: translateY(0);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+h2 {
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #ffffff;
+  text-align: center;
+
+  margin: 0 2rem 1rem 1rem;
+}
+
+.text-container {
+  display: block;
+  gap: 1rem;
+  text-align: center;
+  width: 100%;
+}
+
+.text-container.home {
+  align-content: center;
+  width: 50%;
+  height: 100%;
+  margin-right: 5rem;
+}
+
+.text-container.playground {
+  display: flex;
+  height: 100%;
+
+  align-content: center;
+  justify-content: flex-end;
+  padding-right: 10rem;
+}
+
+.text-container a {
+  text-decoration: none;
+  color: white;
+}
+
+.text-container div {
+  margin-top: 1rem;
+}
+.playground-wrapper {
+  width: 100%;
+  overflow: scroll;
+  border-radius: 1rem 1rem 0 0;
+  height: 100%;
+  background-color: #ffffff1b;
+}
+.color-wrapper {
+  display: flex;
+  gap: 1rem;
+  padding: 0 4rem;
+  width: max-content;
+  justify-self: end;
+  border-radius: 1rem;
+  transition: transform 0.3s, background 0.3s;
+}
+
+.color-wrapper:hover {
+  transform: translateY(0);
+  background: rgba(255, 255, 255, 0.2);
+}
+.language-switcher {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.language-icon {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.3s;
+}
+
+.language-icon.active,
+.language-icon:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+.home-buttons-container {
+  width: 100%;
+}
+.button-link {
+  text-decoration: none;
+}
