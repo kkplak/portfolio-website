@@ -13,18 +13,16 @@ import translationEN from "./locales/en.json";
 
 import "./App.css";
 
-// const resources = {
-//   en: { translation: translationEN },
-//   de: { translation: translationDE },
-//   pl: { translation: translationPL },
-// };
+const resources = {
+  en: { translation: translationEN },
+};
 
-// i18next.use(initReactI18next).init({
-//   resources,
-//   lng: "en",
-//   fallbackLng: "en",
-//   interpolation: { escapeValue: false },
-// });
+i18next.use(initReactI18next).init({
+  resources,
+  lng: "en",
+  fallbackLng: "en",
+  interpolation: { escapeValue: false },
+});
 
 const App = () => {
   // Define multiple color palettes
