@@ -213,14 +213,18 @@ p {
   background-color: rgba(255, 255, 255, 0.1); /* Active state color */
 }
 
-@media (max-width: 768px) {
+@media (max-width: 800px) {
   html {
     overflow: hidden;
+  }
+  .color-wrapper {
+    padding: 0 0.8rem;
+    gap: 0.8rem;
   }
   .content-wrapper {
     overflow: scroll;
     width: 70%;
-    margin-right: 1rem;
+    margin-right: 0;
   }
 
   .text-container.home {
@@ -232,7 +236,7 @@ p {
   }
 }
 
-@media (max-width: 468px) {
+@media (max-width: 500px) {
   .color-wrapper div {
     width: 20px !important;
     height: 20px !important;
