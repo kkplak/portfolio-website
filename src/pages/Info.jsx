@@ -1,8 +1,9 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 
-const Info: React.FC = () => {
+const Info = () => {
   const { t, i18n } = useTranslation();
   const { lang } = useParams();
 
@@ -11,6 +12,11 @@ const Info: React.FC = () => {
       i18n.changeLanguage(lang);
     }
   }, [lang, i18n]);
+
+  useEffect(() => {
+    // Scroll to the top of the content-wrapper when the component mounts
+    document.querySelector(".content-wrapper").scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="wrapper">
