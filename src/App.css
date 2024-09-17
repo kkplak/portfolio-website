@@ -78,19 +78,26 @@ body,
   justify-content: flex-end;
   width: 100%;
   height: 100%;
+  overflow: scroll;
 }
 
 .content-wrapper {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
+  width: 70%;
+  height: max-content;
   box-sizing: border-box;
+  padding-right: 5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  justify-content: center;
 }
 
 .content-section {
+  position: relative;
+  overflow: hidden;
+  min-height: 10rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -98,20 +105,21 @@ body,
   background: rgba(255, 255, 255, 0.1);
   padding: 0.5rem 2rem;
   border-radius: 5rem 3rem;
-  transition: transform 0.3s, background 0.3s;
+  transition: background 0.3s;
 }
 
 .content-section:first-child {
   border-radius: 5rem 5rem 3rem 3rem;
 }
 
-.content-section:hover {
-  transform: translateY(0);
-  background: rgba(255, 255, 255, 0.2);
+.content-section a {
+  color: white;
+  text-decoration: none;
 }
 
 h2 {
   font-size: 1.2rem;
+  text-align: center;
   color: #ffffff;
 }
 
@@ -214,9 +222,23 @@ p {
   background-color: rgba(255, 255, 255, 0.1); /* Active state color */
 }
 
-@media (max-width: 800px) {
+.project-wrapper {
+  width: 100%;
+  height: 100%;
+}
+@media (min-width: 850px) {
+  .content-section:hover {
+    transform: translateY(0);
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+@media (max-width: 850px) {
   html {
     overflow: hidden;
+  }
+  .content-section {
+    padding: 0.5rem 1rem;
+    min-height: 18rem;
   }
   .color-wrapper {
     padding: 0 0.8rem;
@@ -226,7 +248,7 @@ p {
   .content-wrapper {
     overflow: scroll;
     width: 70%;
-    margin-right: 0;
+    padding: 0;
   }
 
   .text-container.home {
@@ -241,6 +263,7 @@ p {
 @media (max-width: 500px) {
   .content-section {
     padding: 0.5rem 1rem;
+    min-height: 22rem;
   }
   .color-wrapper div {
     width: 20px !important;
@@ -253,7 +276,7 @@ p {
   .text-container.playground div {
     margin-top: 5px;
   }
-  .text-containerdiv {
+  .text-container div {
     margin-top: 1rem;
   }
 
@@ -284,3 +307,157 @@ p {
     padding-right: 1.5rem;
   }
 }
+/* 
+.squishmallows::before {
+  overflow: hidden;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://www.parents.com/thmb/F6wJ8kBuHNNml5NYAGdeuIaqud8=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Parents-Squishmallows-e245856cc3864af198cdb877a552006d.jpg");
+  opacity: 0.2;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+}
+.adopt-me::before {
+  overflow: hidden;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://images-cdn.ubuy.co.in/655134abb931a61d3321e627-roblox-adopt-me-mcdonalds-happymeal-toy.jpg");
+  opacity: 0.2;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  filter: blur(5px);
+}
+.multiversus::before {
+  overflow: hidden;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://cdn.dashfight.com/89d91d114871c9478db890ad9581e4a48992e2a4.png");
+  opacity: 0.2;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+}
+
+.elementals::before {
+  overflow: hidden;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaSVkvO4f0M2mAYSGOpwhSrmlXdHZl3M0HeQ&s");
+  opacity: 0.2;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+}
+.captain-america::before {
+  overflow: hidden;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://i.ytimg.com/vi/YfLuBJDD46Y/maxresdefault.jpg");
+  opacity: 0.2;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+}
+.jurassic-world::before {
+  overflow: hidden;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://www.mcdonalds.com/content/dam/sites/uk/nfl/hero/jurassic-world-cs.jpg");
+  opacity: 0.2;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+}
+
+.asfalysis::before {
+  overflow: hidden;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/public//media/asfalysis.png");
+  opacity: 0.2;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+}
+
+.fama::before {
+  overflow: hidden;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/public//media/fama.png");
+  opacity: 0.2;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+}
+.menusso::before {
+  overflow: hidden;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/public//media/menusso.png");
+  opacity: 0.2;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+}
+.fico::before {
+  overflow: hidden;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/public//media/fico.png");
+  opacity: 0.2;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+} */
