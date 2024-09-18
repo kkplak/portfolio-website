@@ -171,6 +171,7 @@ p {
   border-radius: 1rem 1rem 0 0;
   height: 100%;
   background-color: #ffffff1b;
+  padding: 1rem 1rem 5rem;
 }
 .color-wrapper {
   display: flex;
@@ -226,6 +227,9 @@ p {
   width: 100%;
   height: 100%;
 }
+.content-wrapper.projects .content-section {
+  background: rgba(0, 0, 0, 0.4);
+}
 @media (min-width: 850px) {
   .content-section:hover {
     transform: translateY(0);
@@ -259,8 +263,17 @@ p {
     padding-right: 1rem;
   }
 }
+@media (max-width: 600px) {
+  .color-wrapper div {
+    width: 25px !important;
+    height: 25px !important;
+  }
+}
 
 @media (max-width: 500px) {
+  .playground-wrapper {
+    padding: 1rem 1rem 5rem;
+  }
   .content-section {
     padding: 0.5rem 1rem;
     min-height: 22rem;
@@ -307,6 +320,7 @@ p {
     padding-right: 1.5rem;
   }
 }
+
 /* 
 .squishmallows::before {
   overflow: hidden;
