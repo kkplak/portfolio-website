@@ -275,6 +275,9 @@ p {
 }
 
 @media (max-width: 500px) {
+  nav {
+    top: -10px !important;
+  }
   .playground-wrapper {
     padding: 1rem 1rem 5rem;
   }
@@ -324,7 +327,17 @@ p {
     padding-right: 1.5rem;
   }
 }
-
+@media (max-width: 400px) {
+  nav {
+    top: -55px !important;
+  }
+  .text-container.playground {
+    padding-right: 0;
+  }
+  .custom-button {
+    padding: 9px 6px;
+  }
+}
 /* 
 .squishmallows::before {
   overflow: hidden;
