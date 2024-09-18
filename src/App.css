@@ -180,12 +180,7 @@ p {
   width: max-content;
   justify-self: end;
   border-radius: 1rem;
-  transition: transform 0.3s, background 0.3s;
-}
-
-.color-wrapper:hover {
-  transform: translateY(0);
-  background: rgba(255, 255, 255, 0.2);
+  transition: background 0.3s;
 }
 
 .codeline {
@@ -230,13 +225,22 @@ p {
 .content-wrapper.projects .content-section {
   background: rgba(0, 0, 0, 0.4);
 }
+.color-wrapper.active {
+  background: rgba(255, 255, 255, 0.2);
+}
 @media (min-width: 850px) {
   .content-section:hover {
-    transform: translateY(0);
+    background: rgba(255, 255, 255, 0.2);
+  }
+  .color-wrapper:hover {
     background: rgba(255, 255, 255, 0.2);
   }
 }
 @media (max-width: 850px) {
+  .color-wrapper {
+    transition: background 0.3s;
+  }
+
   html {
     overflow: hidden;
   }

@@ -7,17 +7,29 @@ const OrganicBackground = ({ palette }) => {
   const { size } = useThree();
   const [transitionProgress, setTransitionProgress] = useState(1); // Start fully transitioned
 
-  // Store the previous and target palettes for direct interpolation
-  const [previousPalette, setPreviousPalette] = useState(palette.flat());
+  // Store the starting and target palettes for interpolation
+  const [startPalette, setStartPalette] = useState(palette.flat());
+  const [targetPalette, setTargetPalette] = useState(palette.flat());
 
-  // Update the palette when it changes, ensuring no snap
   useEffect(() => {
+    // Start a new transition from the current visible state to the new palette
     if (transitionProgress >= 1) {
-      setPreviousPalette(meshRef.current.material.uniforms.uNextColors.value);
-      meshRef.current.material.uniforms.uColors.value =
-        meshRef.current.material.uniforms.uNextColors.value;
-      meshRef.current.material.uniforms.uNextColors.value = palette.flat();
+      setStartPalette(meshRef.current.material.uniforms.uNextColors.value);
+      setTargetPalette(palette.flat());
       setTransitionProgress(0); // Start the transition
+    } else {
+      // If a transition is already in progress, set the current state as the start point
+      setStartPalette(
+        meshRef.current.material.uniforms.uColors.value.map((c, i) =>
+          THREE.MathUtils.lerp(
+            c,
+            meshRef.current.material.uniforms.uNextColors.value[i],
+            transitionProgress
+          )
+        )
+      );
+      setTargetPalette(palette.flat());
+      setTransitionProgress(0); // Reset the transition to blend from current state
     }
   }, [palette]);
 
@@ -26,8 +38,8 @@ const OrganicBackground = ({ palette }) => {
     () => ({
       uTime: { value: 0.0 },
       uResolution: { value: new THREE.Vector2(size.width, size.height) },
-      uColors: { value: previousPalette },
-      uNextColors: { value: palette.flat() },
+      uColors: { value: startPalette },
+      uNextColors: { value: targetPalette },
       uTransitionProgress: { value: transitionProgress },
     }),
     [size] // Only 'size' should be in the dependency array
@@ -50,10 +62,12 @@ const OrganicBackground = ({ palette }) => {
   // Update transition progress and uniforms
   useEffect(() => {
     if (meshRef.current) {
+      meshRef.current.material.uniforms.uColors.value = startPalette;
+      meshRef.current.material.uniforms.uNextColors.value = targetPalette;
       meshRef.current.material.uniforms.uTransitionProgress.value =
         transitionProgress;
     }
-  }, [transitionProgress]);
+  }, [transitionProgress, startPalette, targetPalette]);
 
   return (
     <mesh ref={meshRef} scale={[10, 10, 1]}>
@@ -69,7 +83,6 @@ const OrganicBackground = ({ palette }) => {
 };
 
 export default OrganicBackground;
-
 const vertexShader = `
   varying vec2 vUv;
   void main() {

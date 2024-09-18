@@ -9,14 +9,9 @@ const Playground: React.FC<{
 }> = ({ colorPalettes, paletteIndex, setPaletteIndex }) => {
   const { t } = useTranslation();
   const [newColor, setNewColor] = useState<string>("#ffffff"); // Start with a default color
-  const [transition, setTransition] = useState(false); // Track transition state
 
   const handlePaletteChange = (index: number) => {
-    setTransition(true); // Enable transition
-    setPaletteIndex(index);
-    setTimeout(() => {
-      setTransition(false); // Disable transition after change
-    }, 500); // Duration should match the CSS transition duration
+    setPaletteIndex(index); // Directly set the new palette
   };
 
   const handleColorChange = (color: any) => {
@@ -70,9 +65,7 @@ const Playground: React.FC<{
                     }, ${color[2] * 255})`,
                     marginBottom: "5px",
                     borderRadius: "5px",
-                    transition: transition
-                      ? "background-color 0.5s ease"
-                      : "none", // Apply transition conditionally
+                    transition: "background-color 0.5s ease",
                   }}
                 />
               ))}
