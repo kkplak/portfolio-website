@@ -7,13 +7,13 @@ const Contact: React.FC = () => {
     <div className="wrapper">
       <div className="text-container home">
         <div className="contact-item">
-          <a href="https://www.linkedin.com/kkplak">LinkedIn</a>
+          <a href="https://www.linkedin.com/in/kkplak/">LinkedIn</a>
         </div>
         <div className="contact-item">
           <a href="https://www.github.com/kkplak">GitHub</a>
         </div>
         <div className="contact-item">
-          <a href="mailto:info@codeline.com">Mail</a>
+          <a href="mailto:konrad.codeline@gmail.com">Mail</a>
         </div>
       </div>
     </div>
