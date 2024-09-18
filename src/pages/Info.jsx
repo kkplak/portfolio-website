@@ -46,8 +46,8 @@ const Info = () => {
           <h2>Innovation & Creativity</h2>
           <p>
             While focusing on your needs, I love to infuse creativity into
-            projects, occasionally incorporating 3D and XR technologies to make
-            your website stand out.
+            projects, occasionally incorporating unique and innovative elements
+            to make your website stand out.
           </p>
         </div>
       </div>

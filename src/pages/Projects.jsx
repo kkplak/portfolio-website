@@ -21,8 +21,7 @@ const Projects = () => {
           <h2>Menusso</h2>
           <p>
             Contributed to the development of Menusso.com, an intuitive platform
-            for restaurant owners to manage their menus seamlessly. The app
-            provides an easy-to-use dashboard for real-time updates.
+            for restaurant owners to manage their menus seamlessly.
           </p>
           {/* <a href="https://www.menusso.com/">See more</a> */}
         </div>
