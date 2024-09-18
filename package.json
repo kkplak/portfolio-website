@@ -1,5 +1,6 @@
 {
-  "name": "insurance-swiss",
+  "name": "codeline",
+  "homepage": "http://codelinedev.com",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
