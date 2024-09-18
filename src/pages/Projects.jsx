@@ -6,7 +6,7 @@ const Projects = () => {
   const currentLanguage = i18n.language;
 
   return (
-    <div className="wrapper">
+    <div className="wrapper projects">
       <div className="content-wrapper projects">
         <div className="content-section fico">
           <h2>FICO</h2>

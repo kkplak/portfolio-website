@@ -19,7 +19,7 @@ const Info = () => {
   }, []);
 
   return (
-    <div className="wrapper">
+    <div className="wrapper info">
       <div className="content-wrapper">
         <div className="content-section">
           <h2>Simplicity & Functionality</h2>
