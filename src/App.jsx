@@ -10,6 +10,10 @@ import i18next from "i18next";
 import Playground from "./pages/Playgroud";
 import { initReactI18next } from "react-i18next";
 import translationEN from "./locales/en.json";
+import Simplicity from "./pages/MiniPages/Simplicity";
+import Accessibility from "./pages/MiniPages/Accessibility";
+import Performance from "./pages/MiniPages/Performance";
+import Innovation from "./pages//MiniPages/Innovation";
 
 import "./App.css";
 
@@ -404,7 +408,7 @@ const App = () => {
       case "home":
         return <Home />;
       case "goals":
-        return <Info />;
+        return <Info changeContent={changeContent} />;
       case "projects":
         return <Projects />;
       case "contact":
@@ -413,15 +417,28 @@ const App = () => {
         return (
           <Playground
             colorPalettes={colorPalettes}
-            paletteIndex={paletteIndex} // Pass paletteIndex
+            paletteIndex={paletteIndex}
             setPaletteIndex={setPaletteIndex}
           />
         );
+      case "simplicity":
+        return <Simplicity changeContent={changeContent} />;
+      case "accessibility":
+        return <Accessibility changeContent={changeContent} />;
+      case "performance":
+        return <Performance changeContent={changeContent} />;
+      case "innovation":
+        return <Innovation changeContent={changeContent} />;
       default:
         return <Home />;
     }
   };
-
+  const hideNavComponents = [
+    "simplicity",
+    "accessibility",
+    "performance",
+    "innovation",
+  ];
   return (
     <I18nextProvider i18n={i18next}>
       <div className="App">
@@ -440,34 +457,36 @@ const App = () => {
             <OrganicBackground palette={colorPalettes[paletteIndex]} />
           </Canvas>
 
-          <nav
-            style={{
-              position: "absolute",
-              top: "0",
-              left: "0",
-              zIndex: 3,
-              display: "flex",
-              flexDirection: "column",
-              gap: "1rem",
-            }}
-          >
-            {["Home", "Goals", "Projects", "Contact", "Playground"].map(
-              (text) => {
-                const componentName = text.toLowerCase().replace(" ", "");
-                const isActive = activeComponent === componentName;
+          {!hideNavComponents.includes(activeComponent) && (
+            <nav
+              style={{
+                position: "absolute",
+                top: "0",
+                left: "0",
+                zIndex: 3,
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              {["Home", "Goals", "Projects", "Contact", "Playground"].map(
+                (text) => {
+                  const componentName = text.toLowerCase().replace(" ", "");
+                  const isActive = activeComponent === componentName;
 
-                return (
-                  <button
-                    key={text}
-                    onClick={() => changeContent(componentName)}
-                    className={`custom-button ${isActive ? "active" : ""}`}
-                  >
-                    {text}
-                  </button>
-                );
-              }
-            )}
-          </nav>
+                  return (
+                    <button
+                      key={text}
+                      onClick={() => changeContent(componentName)}
+                      className={`custom-button ${isActive ? "active" : ""}`}
+                    >
+                      {text}
+                    </button>
+                  );
+                }
+              )}
+            </nav>
+          )}
 
           <h1
             className="codeline"
@@ -478,16 +497,7 @@ const App = () => {
           </h1>
         </div>
         <div className="container">
-          <div className={fadeState}>
-            {activeComponent === "playground" ? (
-              <Playground
-                colorPalettes={colorPalettes}
-                setPaletteIndex={setPaletteIndex}
-              />
-            ) : (
-              renderActiveComponent()
-            )}
-          </div>
+          <div className={fadeState}>{renderActiveComponent()}</div>
         </div>
       </div>
     </I18nextProvider>
