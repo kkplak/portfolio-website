@@ -11,11 +11,17 @@ const Projects = () => {
         <div className="content-section fico">
           <h2>FICO</h2>
           <p>
-            Led the redesign project for FICO a renowned analytics company, from
-            frontend development perspective. Focused on enhancing user
+            Led the redesign project for FICO, a renowned analytics company,
+            from frontend development perspective. Focused on enhancing user
             experience and streamlining business processes for their US clients.
           </p>
-          {/* <a href="https://www.fico.com/">See more</a> */}
+          <a
+            href="https://www.fico.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            See more
+          </a>
         </div>
         <div className="content-section menusso">
           <h2>Menusso</h2>
@@ -23,7 +29,27 @@ const Projects = () => {
             Contributed to the development of Menusso.com, an intuitive platform
             for restaurant owners to manage their menus seamlessly.
           </p>
-          {/* <a href="https://www.menusso.com/">See more</a> */}
+          <a
+            href="https://www.menusso.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            See more
+          </a>
+        </div>
+        <div className="content-section tomandjerry">
+          <h2>Tom and Jerry</h2>
+          <p>
+            Private research on 2D platformer game featuring tom and jerry
+            lookalikes.
+          </p>
+          <a
+            href="https://www.menusso.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            See more
+          </a>
         </div>
         <div className="content-section squishmallows">
           <h2>Squishmallows</h2>
@@ -73,6 +99,17 @@ const Projects = () => {
             McDonald's Happy Meal, offering a thrilling adventure.
           </p>
         </div>
+        <div className="content-section speech">
+          <h2>Speech Synthesis</h2>
+          <p>Private research on speech tool.</p>
+          <a
+            href="https://www.menusso.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            See more
+          </a>
+        </div>
         <div className="content-section asfalysis">
           <h2>Asfalysis - In Progress</h2>
           <p>
@@ -81,7 +118,6 @@ const Projects = () => {
             services and offerings in a secure and user-friendly manner.
           </p>
         </div>
-
         <div className="content-section fama">
           <h2>FAMA - In Progress</h2>
           <p>

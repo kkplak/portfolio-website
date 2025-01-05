@@ -110,6 +110,36 @@ body,
   border-radius: 5rem 3rem;
   transition: background 0.3s;
 }
+
+.projects .content-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+  width: 80%;
+  overflow-y: auto;
+}
+
+.project .content-section {
+  position: relative;
+  overflow: hidden;
+  min-height: 10rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.content-section:hover {
+  background: rgba(255, 255, 255, 0.2);
+
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 .content-section {
   cursor: pointer;
 }
