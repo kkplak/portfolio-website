@@ -27,6 +27,16 @@ i18next.use(initReactI18next).init({
 const App = () => {
   // Define multiple color palettes
   const colorPalettes = [
+    // FAMA Moving Gradient Palette
+    [
+      [0.0, 0.0, 0.0],      // Pure Black (left side)
+      [0.05, 0.1, 0.2],     // Deep Navy Blue
+      [0.1, 0.3, 0.5],      // Dark Blue
+      [0.2, 0.5, 0.7],      // Bright Blue
+      [0.3, 0.7, 0.8],      // Cyan
+      [0.95, 0.75, 0.3],    // Yellow
+      [1.0, 0.5, 0.2],      // Orange
+    ],
     [
       [0.18, 0.18, 0.18], // Charcoal
       [0.25, 0.25, 0.25], // Graphite
