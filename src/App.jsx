@@ -461,7 +461,7 @@ const App = () => {
               gap: "1rem",
             }}
           >
-            {["Home", "Goals", "Projects", "Contact", "Playground"].map(
+            {["Home", "Contact", "Playground"].map(
               (text) => {
                 const componentName = text.toLowerCase().replace(" ", "");
                 const isActive = activeComponent === componentName;

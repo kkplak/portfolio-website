@@ -1,261 +1,225 @@
-import React, { useRef, useMemo, useEffect } from "react";
+import React, { useRef, useMemo, useEffect, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
-const OrganicBackground = () => {
+const OrganicBackground = ({ palette }) => {
   const meshRef = useRef();
   const { size } = useThree();
-  const mouseRef = useRef(new THREE.Vector2(0.5, 0.5));
+  const [transitionProgress, setTransitionProgress] = useState(1); // Start fully transitioned
 
-  // Track mouse position (optional)
+  // Store the starting and target palettes for interpolation
+  const [startPalette, setStartPalette] = useState(palette.flat());
+  const [targetPalette, setTargetPalette] = useState(palette.flat());
+
   useEffect(() => {
-    const handleMouseMove = (event) => {
-      mouseRef.current.x = event.clientX / window.innerWidth;
-      mouseRef.current.y = 1.0 - event.clientY / window.innerHeight;
-    };
-    
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+    // Start a new transition from the current visible state to the new palette
+    if (transitionProgress >= 1) {
+      setStartPalette(meshRef.current.material.uniforms.uNextColors.value);
+      setTargetPalette(palette.flat());
+      setTransitionProgress(0); // Start the transition
+    } else {
+      // If a transition is already in progress, set the current state as the start point
+      setStartPalette(
+        meshRef.current.material.uniforms.uColors.value.map((c, i) =>
+          THREE.MathUtils.lerp(
+            c,
+            meshRef.current.material.uniforms.uNextColors.value[i],
+            transitionProgress
+          )
+        )
+      );
+      setTargetPalette(palette.flat());
+      setTransitionProgress(0); // Reset the transition to blend from current state
+    }
+  }, [palette]);
 
   // Initialize uniforms
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0.0 },
       uResolution: { value: new THREE.Vector2(size.width, size.height) },
-      uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+      uColors: { value: startPalette },
+      uNextColors: { value: targetPalette },
+      uTransitionProgress: { value: transitionProgress },
     }),
-    []
+    [size] // Only 'size' should be in the dependency array
   );
-
-  // Update resolution on resize
-  useEffect(() => {
-    if (meshRef.current) {
-      meshRef.current.material.uniforms.uResolution.value.set(size.width, size.height);
-    }
-  }, [size]);
 
   // Animation loop
   useFrame(({ clock }) => {
+    const elapsedTime = clock.getElapsedTime();
+
     if (meshRef.current) {
-      meshRef.current.material.uniforms.uTime.value = clock.getElapsedTime();
-      meshRef.current.material.uniforms.uMouse.value.lerp(mouseRef.current, 0.02);
+      meshRef.current.material.uniforms.uTime.value = elapsedTime;
+
+      // Increment transition progress smoothly
+      if (transitionProgress < 1) {
+        setTransitionProgress((prev) => Math.min(prev + 0.01, 1)); // Adjust the transition speed here
+      }
     }
   });
 
+  // Update transition progress and uniforms
+  useEffect(() => {
+    if (meshRef.current) {
+      meshRef.current.material.uniforms.uColors.value = startPalette;
+      meshRef.current.material.uniforms.uNextColors.value = targetPalette;
+      meshRef.current.material.uniforms.uTransitionProgress.value =
+        transitionProgress;
+    }
+  }, [transitionProgress, startPalette, targetPalette]);
+
   return (
-    <mesh ref={meshRef}>
+    <mesh ref={meshRef} scale={[10, 10, 1]}>
       <planeGeometry args={[2, 2]} />
       <shaderMaterial
         uniforms={uniforms}
         fragmentShader={fragmentShader}
         vertexShader={vertexShader}
-        depthWrite={false}
-        depthTest={false}
+        side={THREE.DoubleSide}
       />
     </mesh>
   );
 };
 
 export default OrganicBackground;
-// ========================================
-// Vertex Shader
-// ========================================
 const vertexShader = `
   varying vec2 vUv;
-  
   void main() {
     vUv = uv;
-    gl_Position = vec4(position.xy, 0.0, 1.0);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }
 `;
 
-// ========================================
-// Fragment Shader
-// ========================================
+// Fragment Shader with Color Transition
 const fragmentShader = `
-  precision highp float;
-  
-  // === UNIFORMS ===
-  uniform float uTime;
-  uniform vec2 uResolution;
-  uniform vec2 uMouse;
-  
-  varying vec2 vUv;
-  
-  // === TUNABLE PARAMETERS ===
-  #define SPEED 0.3            // Animation speed multiplier
-  #define WARP_STRENGTH 0.2    // UV warping intensity (reduced for smoother curves)
-  #define BLOB_SCALE 0.1       // Size of gradient blob
-  #define VIGNETTE_STRENGTH 0.0 // Edge darkening intensity (0.0 - 1.0)
-  #define GRAIN_STRENGTH 0.025   // Film grain intensity (subtle, no lines)
-  #define BLUR_ITERATIONS 1     // Smoothing passes (higher = softer)
-  #define CURVE_FREQUENCY 2.0  // Frequency of the curved waves
-  
-  // === COLOR PALETTE ===
-  // Deep navy/blue -> teal/cyan -> warm yellow -> orange/red
-  const vec3 COLOR_1 = vec3(0.00, 0.00, 0.0);  // Deep navy (almost black)
-  const vec3 COLOR_2 = vec3(0.05, 0.15, 0.35);  // Navy blue
-  const vec3 COLOR_3 = vec3(0.1, 0.5, 0.6);     // Teal/cyan
-  const vec3 COLOR_4 = vec3(0.9, 0.7, 0.2);     // Warm yellow
-  const vec3 COLOR_5 = vec3(1.0, 0.4, 0.15);    // Orange/red
-  
-  // ========================================
-  // 2D VALUE NOISE (Lightweight)
-  // ========================================
-  float hash(vec2 p) {
-    p = fract(p * vec2(123.34, 456.21));
-    p += dot(p, p + 45.32);
-    return fract(p.x * p.y);
+uniform float uTime;
+uniform vec2 uResolution;
+uniform float uColors[15]; // 5 colors * 3 components (RGB)
+uniform float uNextColors[15]; // Next colors to transition to
+uniform float uTransitionProgress; // Transition progress 0.0 - 1.0
+varying vec2 vUv;
+
+// Simplex noise implementation by Ashima Arts
+vec3 mod289(vec3 x) { return x - floor(x / 289.0) * 289.0; }
+vec4 mod289(vec4 x) { return x - floor(x / 289.0) * 289.0; }
+vec4 permute(vec4 x) { return mod289(((x * 34.0) + 1.0) * x); }
+vec4 taylorInvSqrt(vec4 r)
+{
+  return 1.79284291400159 - 0.85373472095314 * r;
+}
+
+float snoise(vec3 v)
+{
+  const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;
+  const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);
+
+  // First corner
+  vec3 i  = floor(v + dot(v, C.yyy) );
+  vec3 x0 =   v - i + dot(i, C.xxx) ;
+
+  // Other corners
+  vec3 g = step(x0.yzx, x0.xyz);
+  vec3 l = 1.0 - g;
+  vec3 i1 = min( g.xyz, l.zxy );
+  vec3 i2 = max( g.xyz, l.zxy );
+
+  // x0 = x0 - 0.0 + 0.0 * C
+  vec3 x1 = x0 - i1 + C.xxx;
+  vec3 x2 = x0 - i2 + 2.0 * C.xxx;
+  vec3 x3 = x0 - 1.0 + 3.0 * C.xxx;
+
+  // Permutations
+  i = mod289(i);
+  vec4 p = permute( permute( permute(
+      i.z + vec4(0.0, i1.z, i2.z, 1.0 ))
+    + i.y + vec4(0.0, i1.y, i2.y, 1.0 ))
+    + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));
+
+  // Gradients: 7x7 points over a cube, mapped onto an octahedron.
+  float n_ = 1.0/7.0; // N=7
+  vec3  ns = n_ * D.wyz - D.xzx;
+
+  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);   //  mod(p,N*N)
+
+  vec4 x_ = floor(j * ns.z);
+  vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)
+
+  vec4 x = x_ *ns.x + ns.yyyy;
+  vec4 y = y_ *ns.x + ns.yyyy;
+  vec4 h = 1.0 - abs(x) - abs(y);
+
+  vec4 b0 = vec4( x.xy, y.xy );
+  vec4 b1 = vec4( x.zw, y.zw );
+
+  // Break into sign and magnitude
+  vec4 s0 = floor(b0)*2.0 + 1.0;
+  vec4 s1 = floor(b1)*2.0 + 1.0;
+  vec4 sh = -step(h, vec4(0.0));
+
+  vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;
+  vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;
+
+  vec3 p0 = vec3(a0.xy,h.x);
+  vec3 p1 = vec3(a0.zw,h.y);
+  vec3 p2 = vec3(a1.xy,h.z);
+  vec3 p3 = vec3(a1.zw,h.w);
+
+  // Normalize gradients
+  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+  p0 *= norm.x;
+  p1 *= norm.y;
+  p2 *= norm.z;
+  p3 *= norm.w;
+
+  // Mix final noise value
+  vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+  m = m * m;
+  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),
+    dot(p2,x2), dot(p3,x3) ) );
+}
+
+// Function to get color from arrays
+vec3 getColor(float colors[15], int index) {
+  int idx = index * 3;
+  return vec3(colors[idx], colors[idx + 1], colors[idx + 2]);
+}
+
+void main() {
+  vec2 st = vUv;
+  float t = uTime * 0.05;
+
+  // Noise-based pattern
+  float n = snoise(vec3(st * 5.0, t));
+
+  // Map noise value to 0.0 - 1.0
+  float noiseValue = n * 0.5 + 0.5;
+
+  // No ripple effect
+  float combined = noiseValue;
+
+  // Clamp combined value
+  combined = clamp(combined, 0.0, 1.0);
+
+  // Interpolate colors with transition
+  vec3 colorA;
+  vec3 colorB;
+  if (combined < 0.25) {
+    colorA = mix(getColor(uColors, 0), getColor(uColors, 1), smoothstep(0.0, 0.25, combined));
+    colorB = mix(getColor(uNextColors, 0), getColor(uNextColors, 1), smoothstep(0.0, 0.25, combined));
+  } else if (combined < 0.5) {
+    colorA = mix(getColor(uColors, 1), getColor(uColors, 2), smoothstep(0.25, 0.5, combined));
+    colorB = mix(getColor(uNextColors, 1), getColor(uNextColors, 2), smoothstep(0.25, 0.5, combined));
+  } else if (combined < 0.75) {
+    colorA = mix(getColor(uColors, 2), getColor(uColors, 3), smoothstep(0.5, 0.75, combined));
+    colorB = mix(getColor(uNextColors, 2), getColor(uNextColors, 3), smoothstep(0.5, 0.75, combined));
+  } else {
+    colorA = mix(getColor(uColors, 3), getColor(uColors, 4), smoothstep(0.75, 1.0, combined));
+    colorB = mix(getColor(uNextColors, 3), getColor(uNextColors, 4), smoothstep(0.75, 1.0, combined));
   }
-  
-  float noise(vec2 p) {
-    vec2 i = floor(p);
-    vec2 f = fract(p);
-    f = f * f * (3.0 - 2.0 * f); // Smoothstep interpolation
-    
-    float a = hash(i);
-    float b = hash(i + vec2(1.0, 0.0));
-    float c = hash(i + vec2(0.0, 1.0));
-    float d = hash(i + vec2(1.0, 1.0));
-    
-    return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
-  }
-  
-  // ========================================
-  // FRACTIONAL BROWNIAN MOTION (FBM)
-  // ========================================
-  float fbm(vec2 p) {
-    float value = 0.0;
-    float amplitude = 0.5;
-    float frequency = 1.0;
-    
-    // 3 octaves for performance
-    for(int i = 0; i < 3; i++) {
-      value += amplitude * noise(p * frequency);
-      frequency *= 2.0;
-      amplitude *= 0.5;
-    }
-    
-    return value;
-  }
-  
-  // ========================================
-  // GRADIENT FIELD (Animated curves)
-  // ========================================
-  float gradientField(vec2 uv, float time) {
-    // Create smooth flowing curves using sine waves
-    float curve1 = sin(uv.x * CURVE_FREQUENCY + time * SPEED * 0.5) * 0.5;
-    float curve2 = sin(uv.y * CURVE_FREQUENCY * 0.8 - time * SPEED * 0.3) * 0.3;
-    float curve3 = sin((uv.x - uv.y) * CURVE_FREQUENCY * 0.6 + time * SPEED * 0.4) * 0.4;
-    
-    // Base diagonal gradient with curves (normalized to reasonable range)
-    float diagonal = (uv.x + uv.y) * 0.3 + curve1 + curve2 + curve3;
-    
-    // Add subtle organic variation with noise
-    vec2 warpUV = uv + vec2(time * SPEED * 0.3, time * SPEED * 0.2);
-    float warp1 = fbm(warpUV * BLOB_SCALE);
-    
-    vec2 warpUV2 = uv + vec2(-time * SPEED * 0.25, time * SPEED * 0.35);
-    float warp2 = fbm((warpUV2 + vec2(5.0, 2.5)) * BLOB_SCALE * 1.3);
-    
-    // Combine curves with subtle noise warping
-    float field = diagonal + (warp1 - 0.5) * WARP_STRENGTH + (warp2 - 0.5) * WARP_STRENGTH * 0.5;
-    
-    // Add breathing/pulsing motion
-    field += sin(time * SPEED * 0.5) * 0.1;
-    
-    return field;
-  }
-  
-  // ========================================
-  // COLOR MAPPING (Smooth gradient stops)
-  // ========================================
-  vec3 mapColor(float t) {
-    t = clamp(t, 0.0, 1.0);
-    
-    // Compress the range for yellow/orange even more (0.85-1.0)
-    // Black -> Navy -> Teal takes up most space (0-0.85)
-    // Yellow -> Orange only in very high peaks (0.85-1.0)
-    vec3 color;
-    
-    if (t < 0.35) {
-      // COLOR_1 -> COLOR_2 (wider range)
-      float blend = smoothstep(0.0, 0.35, t);
-      color = mix(COLOR_1, COLOR_2, blend);
-    } else if (t < 0.7) {
-      // COLOR_2 -> COLOR_3 (wider range)
-      float blend = smoothstep(0.35, 0.7, t);
-      color = mix(COLOR_2, COLOR_3, blend);
-    } else if (t < 0.9) {
-      // COLOR_3 -> COLOR_4 (narrow range)
-      float blend = smoothstep(0.7, 0.9, t);
-      color = mix(COLOR_3, COLOR_4, blend);
-    } else {
-      // COLOR_4 -> COLOR_5 (very narrow range)
-      float blend = smoothstep(0.9, 1.0, t);
-      color = mix(COLOR_4, COLOR_5, blend);
-    }
-    
-    return color;
-  }
-  
-  // ========================================
-  // VIGNETTE EFFECT
-  // ========================================
-  float vignette(vec2 uv) {
-    uv = uv * 2.0 - 1.0; // Center coordinates
-    float dist = length(uv);
-    return smoothstep(1.0, 0.3, dist);
-  }
-  
-  // ========================================
-  // FILM GRAIN / NOISE
-  // ========================================
-  float grain(vec2 uv, float time) {
-    // Better hash function to avoid patterns/lines
-    vec2 p = uv * 0.5 + fract(time * 0.3);
-    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453) * 2.0 - 1.0;
-  }
-  
-  // ========================================
-  // MAIN
-  // ========================================
-  void main() {
-    // Aspect-corrected UV coordinates (centered)
-    vec2 uv = vUv;
-    float aspect = uResolution.x / uResolution.y;
-    vec2 centeredUV = (uv - 0.5) * vec2(aspect, 1.0);
-    
-    // Generate gradient field
-    float field = gradientField(centeredUV, uTime);
-    
-    // Additional blur/smoothing by sampling nearby positions
-    float blurredField = field;
-    float blurRadius = 0.08;
-    for(int i = 0; i < BLUR_ITERATIONS; i++) {
-      float angle = float(i) * 2.094; // ~120 degrees
-      vec2 offset = vec2(cos(angle), sin(angle)) * blurRadius;
-      blurredField += gradientField(centeredUV + offset, uTime);
-    }
-    blurredField /= float(BLUR_ITERATIONS + 1);
-    
-    // Apply power function to create concentrated peaks with black base
-    // This creates sharp falloff - mostly black with concentrated color clusters
-    float normalized = blurredField * 0.4 + 0.5; // Normalize to 0-1 range
-    normalized = clamp(normalized, 0.0, 1.0);
-    float t = pow(normalized, 2.5); // Power function creates concentration
-    vec3 color = mapColor(t);
-    
-    // Apply vignette
-    float vig = mix(1.0, vignette(uv), VIGNETTE_STRENGTH);
-    color *= vig;
-    
-    // Add subtle film grain (dithering to prevent banding)
-    float grainValue = grain(uv * uResolution, uTime) * GRAIN_STRENGTH;
-    color += grainValue;
-    
-    // Keep in linear color space (Three.js handles sRGB conversion)
-    gl_FragColor = vec4(color, 1.0);
-  }
+
+  vec3 finalColor = mix(colorA, colorB, uTransitionProgress);
+
+  gl_FragColor = vec4(finalColor, 1.0);
+}
 `;
